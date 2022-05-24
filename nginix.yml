@@ -1,0 +1,54 @@
+# update system and install nginx, nodejs and npm.
+
+---
+  - hosts: webservers
+    become: true
+
+    vars:
+      NODEJS_VERSION: "12"
+      ansible_distribution_release: "xenial" #trusty
+      
+    tasks:
+      - name: updating apt package
+        apt: name=* state=latest
+
+      - name: run apt-get update for all the services
+        apt:
+          update_cache: yes
+
+      - name: "install nginx"
+        apt:
+          name: ['nginx', 'ssl-cert']
+          state: latest
+
+      - name: Ensure nginx starts
+        service: name=nginx state=started enabled=yes
+
+      - name: Install the gpg key for nodejs LTS
+        apt_key:
+          url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+          state: present
+
+      - name: Install the nodejs LTS repos
+        apt_repository:
+          repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x {{ ansible_distribution_release }} main"
+          state: present
+          update_cache: yes
+
+      - name: Install the nodejs
+        apt:
+          name: nodejs
+          state: present
+
+      - name: Ensure nginx reload
+        service: name=nginx state=reloaded enabled=yes
+          
+      - name: Copy index page
+        copy:
+          src: ~/ansible/index.html
+          dest: /var/www/html/index.nginx-debian.html
+          mode: '0644'
+        tags: [ 'update', 'sync' ]
+
+      - name: updating apt package
+        apt: name=* state=latest

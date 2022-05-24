@@ -1,0 +1,4 @@
+# hosts-dev
+
+[webservers]
+52.189.194.186 ansible_user=azureuser
