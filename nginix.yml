@@ -45,7 +45,7 @@
           
       - name: Copy index page
         copy:
-          src: ~/ansible/index.html
+          src: index.html
           dest: /var/www/html/index.nginx-debian.html
           mode: '0644'
         tags: [ 'update', 'sync' ]
