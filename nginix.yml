@@ -45,7 +45,7 @@
           
       - name: Copy index page
         copy:
-          src: index.html
+          src: /html/index.html
           dest: /var/www/html/index.nginx-debian.html
           mode: '0644'
         tags: [ 'update', 'sync' ]
